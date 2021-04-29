@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Card Editor Prototype</title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond|Helvetica|GFS+Didot|Roboto|Grand+Hotel|Lora|Playfair+Display|Satisfy">
+	<style type="text/css">
+		*{
+			box-sizing: border-box;
+			font-family: 'Helvetica';
+		}
+		header{
+			width: 100%;
+			height: 10vh;
+			background-color: #6ECBD9;
+			position: sticky;
+			top: 0;
+			z-index: 100;
+			grid-area: header;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+		#title{
+			font-size: 2em;
+			font-family: 'League Spartan', 'Arial';
+		}
+		img{
+			display: block;
+		}
+		#editor, #card, #cardcontent{
+			display: flex;
+		}
+		body{
+			margin: 0;
+			top: 0;
+			display: grid;
+			grid-template-columns: 30% 70%;
+			grid-template-rows: 10vh 45vh 45vh;
+			justify-items: center;
+			grid-template-areas:
+			"header header" 
+			"editor card"
+			"editor card";
+		}
+		div#editor{
+			display: grid;
+			grid-template-columns: 5vw 25vw;
+			grid-template-areas: 
+			"nav container";
+			overflow: auto;
+			grid-area: editor;
+			border: 1px solid #422C73;
+		}
+		div#card{
+			/*grid-area: card;*/
+			border: 2px solid black;
+			width: 437px;
+			height: 614px;
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			flex-direction: column;
+			/*background: url("https://i.pinimg.com/originals/56/f9/e2/56f9e272de8708a62f2b94d941382415.jpg");*/
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			overflow: hidden;
+			
+			position: relative;
+		}
+		#images{
+			width: 100%;
+			height: 100%;
+			grid-area: image;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+		#cardcontent1, #cardcontent2{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			font-size: 1.5em;
+		}
+		.head{
+			font-family: 'Edwardian Script ITC';
+			font-size: 2em;
+		}
+		#preview{
+			background-color: #F6F6F6;
+			width: 100%;
+			height: 100%;
+			grid-area: card;
+			display: flex;
+			justify-content: space-around;
+			position: relative;
+			align-items: center;
+			flex-direction: column;
+			border-left: 1px solid #422C73;
+		}
+		.info{
+			width: 100%;
+			height: 88vh; 
+			overflow-y: auto;
+			overflow-x: hidden;
+			padding-top: 10px
+		}
+		.textbox{
+			padding-top: 5px;
+			padding-left:8px;
+			border-radius: 15px; 
+			display: block; 
+			width: 22vw;
+			height: 4vh;
+			border: 1px solid black;
+			margin-bottom: 2vh;
+			overflow-y: auto;
+			line-height: 130%;
+			outline: 0px solid transparent;
+		}
+		.cardtext{
+			word-wrap: normal;
+		}
+		h2{
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+		label, input{
+			display: block;
+			margin-bottom: 1vh;
+		}
+		#location, #message{
+			height: 12vh;
+		}
+		select{
+			width: 22vh;
+			height: 4vh;
+			margin-top: -3px;
+			margin-bottom: 1vh;
+			margin-right: 40vh;
+			padding: 3px;
+		}
+		button{
+			padding: 5px;
+			width: 20vh;
+			height: 5vh;
+			margin-bottom: 5px;
+			display: inline-block;
+		}
+		#chead, #ctitle, #cbody, #insMessage, #insName1, #insName2{
+			word-wrap: normal;
+			text-align: center;
+		}
+		#insMessage{
+			font-size: 1.2em;
+		}
+		textarea{
+			font-size: 1em;
+			resize: none;
+		}
+		#border, #ctext{
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			
+		}
+		#border{
+			z-index: 2;
+		}
+		#ctext{
+			z-index: 1;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-around;
+			align-items: center;
+			padding: 10px;
+		}
+		.bimg{
+			width: 100%;
+			height: 100%;
+		}
+		.imgcontainer{
+			width: 20vh;
+			height: 20vh;
+		}
+
+		:root {
+			--primary-color: #D96AA7;
+			--secondary-color: #C1E679;
+			--complimentary-color: #88BFB5;
+			--contrast-color: #F2E527;
+			--light-color: #D2A9D9;
+		}
+
+		.container {
+			width: 25vw;
+			height: 100%;
+  			/*min-height: 100vh;*/
+  			font-family: Montserrat, sans-serif;
+  			grid-area: container;
+  			overflow: auto;
+  			
+		}
+
+		nav a {
+    		font-size: 1.5em;
+    		color: #fff;
+    		text-decoration: none;
+    		padding: 20px 0px;
+    		text-align: center;
+    		border-bottom: 1px solid #00000055; 
+		}
+
+		nav a:nth-child(2), nav a:nth-child(3), nav a:nth-child(4){
+			visibility: hidden;
+		}
+
+		nav {
+			border-right: 1px solid #00000055;
+			grid-area: nav;
+   			position: fixed;
+    		left: 0;
+    		z-index: 50;
+    		display: flex;
+    		justify-content: flex-start;
+    		flex-direction: column;
+    		height: 90vh;
+    		width: 5%;
+    		background: var(--secondary-color);
+		}
+
+		section {
+			padding: 1vh 0 0 1vh;
+    		position: absolute;
+    		height: 85vh;
+    		width: 25vh;
+    		opacity: 0;
+    		visibility: hidden;
+	        transition: all ease-out .3s; 
+    		display: flex;
+    		justify-content: center;
+		} 
+		section#first{
+			visibility: visible;
+			opacity: 1;
+			z-index: 10;
+		}
+
+/* Styles applied on trigger */
+		section:target {
+			visibility: visible;
+    		opacity: 1;
+    		position: absolute;
+    		width: 50vh;
+    		height: 89vh;
+    		z-index: 10;
+		}
+		@keyframes reveal{
+			from{opacity: 0}
+			to{opacity: 1}
+		}	
+
+	</style>
+	<script type="text/javascript">
+		// design ideas : marble, velvet
+		// corporate: Conference/Seminar, Team-Building event
+		// informal: Birthday, Hari Raya
+		// formal: Wedding, Award ceremony
+
+		const wtext = document.getElementsByClassName("wtext");
+		const atext = document.getElementsByClassName("atext");
+		const greeting = ["","Assalamualaikum ", "Dear "];
+		const honor = ["", "Sir,", "Madam,", "Dr.,", "Mr.,", "Mrs.,"];
+		// let colorInput = document.getElementById("color");
+		// colorInput.addEventListener('input', () =>{
+		// 	let color = colorInput.value;
+		// 	document.getElementById("ctitle").style.color = "" + color + "";
+		// 	document.getElementById("chead").style.color = color;
+		// 	document.getElementById("cbody").style.color = color;
+		// });
+
+		function onClick(){
+			var insName1 = document.getElementById("insName1");
+			var insName2 = document.getElementById("insName2");
+			var insDate = document.getElementById("insDate");
+			var insLocation = document.getElementById("insLocation");
+			var insMessage = document.getElementById("insMessage");
+			var insSalutation = document.getElementById("insSalutation");
+
+			insSalutation.innerHTML= wtext[0].innerHTML;
+			insName1.innerHTML = wtext[1].innerHTML;
+			insName2.innerHTML = wtext[2].innerHTML;
+			insDate.innerHTML = wtext[3].innerHTML;
+			insLocation.innerHTML = wtext[4].value;
+			insMessage.innerHTML = wtext[5].value;
+		}
+		function onClick2() {
+			var insSalutation = document.getElementById("insSalutation");
+			var insTitle = document.getElementById("insTitle");
+			var insName = document.getElementById("insName");
+			var insClass = document.getElementById("insClass");
+			var insDate = document.getElementById("insDate");
+			var insLocation = document.getElementById("insLocation");
+			var insMessage = document.getElementById("insMessage");
+
+			insSalutation.innerHTML = atext[0].innerHTML;
+			insTitle.innerHTML = atext[1].innerHTML;
+			insName.innerHTML = atext[2].innerHTML;
+			insClass.innerHTML = "Class of: " + atext[3].innerHTML;
+			insDate.innerHTML = "Date: " + atext[4].innerHTML;
+			insLocation.innerHTML = "Location: " + atext[5].value;
+			insMessage.innerHTML = atext[6].value;
+		}
+		function revert() {
+			var template = document.getElementById("first");
+			template.style.opacity = 0;
+		}
+		function revert2() {
+			var template = document.getElementById("first");
+			template.style.opacity = 1;
+		}
+		function allowDrop(ev) {
+ 			ev.preventDefault();
+		}
+
+		function drag(ev) {
+  			ev.dataTransfer.setData("text", ev.target.id);
+		}
+
+		function drop(ev) {
+  			ev.preventDefault();
+  			var data = ev.dataTransfer.getData("text");
+  			ev.target.appendChild(document.getElementById(data));
+		}
+		function tFirst() {
+			var first = document.getElementsByTagName("section")[1];
+			var second = document.getElementsByTagName("section")[2];
+
+			second.removeAttribute("id");
+			first.setAttribute('id', 'second');
+
+			var card = document.getElementById("ctext");
+
+			while (card.hasChildNodes()){
+				card.removeChild(card.firstChild);
+			}
+
+			var span1 = document.createElement('span');
+			span1.setAttribute('id', 'insName1');
+			span1.style.cssText = "font-family: 'Edwardian Script ITC';";
+
+			var span2 = document.createElement('span');
+			span2.setAttribute('id', 'insName2');
+			span2.style.cssText = "font-family: 'Edwardian Script ITC';";
+
+			var span3 = document.createElement('span');
+			span3.setAttribute('id', 'insDate');
+			span3.style.cssText = "font-family: 'Helvetica';";
+
+			var span4 = document.createElement('span');
+			span4.setAttribute('id', 'insLocation');
+			span4.style.cssText = "font-family: 'Helvetica';";
+
+			var span5 = document.createElement('span');
+			span5.setAttribute('id', 'insMessage');
+			span5.style.cssText = "font-family: 'Helvetica'; text-align: center; word-wrap: normal";
+
+			var span6 = document.createElement('span');
+			span6.setAttribute('id', 'insSalutation');
+			span6.style.cssText = "font-family: 'Helvetica';";
+
+			var span7 = document.createElement('span');
+			span7.setAttribute('id', 'invited');
+			span7.style.cssText = "text-align: center";
+
+			var span8 = document.createElement('span');
+			span8.setAttribute('id', 'and');
+			span8.style.cssText = "font-family: 'Edwardian Script ITC';";
+
+			var title = document.createElement('div');
+			title.setAttribute('id', 'ctitle');
+			title.appendChild(span6);
+			title.appendChild(span7);
+			title.style.cssText = "display: flex; flex-direction: column; align-items:center; font-size: 1.2em; text-align: center";
+
+			var head = document.createElement('div');
+			head.setAttribute('id', 'chead');
+			head.appendChild(span1);
+			head.appendChild(span8);
+			head.appendChild(span2);
+			head.style.cssText = "display: flex; flex-direction: column; align-items:center; font-size: 2em;";
+
+			var body = document.createElement('div');
+			body.setAttribute('id', 'cbody');
+			body.appendChild(span3);
+			body.appendChild(span4);
+			body.style.cssText = "display: flex; flex-direction: column; align-items:center; text-align: center; font-size: 1.2em";
+
+			// var span6 = document.createElement('span');
+			// span1.setAttribute('id', 'insName1');
+			// span1.style.cssText = "font-family: 'Helvetica'; font-size: 1.2em;";
+			card.appendChild(title);
+			card.appendChild(head);
+			card.appendChild(body);
+			card.appendChild(span5);
+
+			span6.innerHTML = "Salutations";
+			span7.innerHTML = "You have been cordially invited to the wedding of:";
+			span1.innerHTML = "Groom";
+			span8.innerHTML = "&";
+			span2.innerHTML = "Bride";
+			span3.innerHTML = "Date";
+			span4.innerHTML = "Location";
+			span5.innerHTML = "Message";
+
+		}
+		function tSecond() {
+			var first = document.getElementsByTagName("section")[1];
+			var second = document.getElementsByTagName("section")[2];
+
+			var card = document.getElementById("ctext");
+
+			while (card.hasChildNodes()){
+				card.removeChild(card.firstChild);
+			}
+
+			first.removeAttribute("id");
+			second.setAttribute('id', 'second');
+
+			var span1 = document.createElement('span');
+			span1.setAttribute('id', 'insSalutation');
+
+			var span2 = document.createElement('span');
+			span2.setAttribute('id', 'insTitle');
+
+			var span3 = document.createElement('span');
+			span3.setAttribute('id', 'insName');
+
+			var span4 = document.createElement('span');
+			span4.setAttribute('id', 'insClass');
+
+			var span5 = document.createElement('span');
+			span5.setAttribute('id', 'insDate');
+
+			var span6 = document.createElement('span');
+			span6.setAttribute('id', 'insLocation');
+
+			var span7 = document.createElement('span');
+			span7.setAttribute('id', 'insMessage');
+
+			var span8 = document.createElement('span');
+			span8.setAttribute('id', 'invited');
+
+			var span9 = document.createElement('span');
+			span9.setAttribute('id', 'honor');
+
+			var img = document.createElement('img');
+			img.setAttribute('src', 'images/grad.png');
+			img.style.width = "50%";
+
+			var title = document.createElement('div');
+			title.setAttribute('id', 'ctitle');
+			title.appendChild(span1);
+			title.appendChild(span8);
+			title.style.cssText = "display: flex; flex-direction: column; align-items:center; font-size: 1.2em; text-align: center";
+
+			var head = document.createElement('div');
+			head.setAttribute('id', 'chead');
+			head.appendChild(span2);
+			head.appendChild(span9);
+			head.appendChild(span3);
+			head.appendChild(span4);
+			head.style.cssText = "display: flex; flex-direction: column; align-items:center; font-size: 2em; text-align: center";
+
+			var body = document.createElement('div');
+			body.setAttribute('id', 'cbody');
+			body.appendChild(span5);
+			body.appendChild(span6);
+			body.style.cssText = "display: flex; flex-direction: column; align-items:center; font-size: 1.2em;";
+
+			card.appendChild(title);
+			card.appendChild(img);
+			card.appendChild(head);
+			card.appendChild(body);
+			card.appendChild(span7);
+
+			span1.innerHTML = "Salutations";
+			span8.innerHTML = "Please join us in celebrating...";
+			span2.innerHTML = "Event Title";
+			span9.innerHTML = "In honor of:";
+			span3.innerHTML = "Graduate";
+			span4.innerHTML = "Class of: Year";
+			span5.innerHTML = "Date";
+			span6.innerHTML = "Location";
+			span7.innerHTML = "Message";
+		}
+		function greet(option){
+			for (let i = 0; i < greeting.length; i++){
+				if (option == i){
+					wtext[0].innerHTML = wtext[0].innerHTML + greeting[i];
+					atext[0].innerHTML = atext[0].innerHTML + greeting[i];
+				}
+			}
+		}
+		function honorific(option){
+			for (let i = 0; i < honor.length; i++){
+				if (option == i){
+					wtext[0].innerHTML = wtext[0].innerHTML + honor[i];
+					atext[0].innerHTML = atext[0].innerHTML + honor[i];
+				} 
+			}
+		}
+		function reveal(){
+			var two = document.getElementsByTagName("a")[2];
+			var three = document.getElementsByTagName("a")[3];
+			var four = document.getElementsByTagName("a")[4];
+			var second = document.getElementById("second");
+			var third = document.getElementById("third");
+			var fourth = document.getElementById("fourth");
+
+			two.style.visibility  = "visible";
+			two.style.animation = "reveal 0.3s ease-in";
+			three.style.visibility = "visible";
+			three.style.animation = "reveal 0.3s ease-in";
+			four.style.visibility = "visible";
+			four.style.animation = "reveal 0.3s ease-in";
+		}
+		function saved(){
+			 localStorage.setItem("salutations", wtext[0].innerHTML);
+			 localStorage.setItem("name1",wtext[1].innerHTML);
+			 localStorage.setItem("name2",wtext[2].innerHTML);
+			 localStorage.setItem("date",wtext[3].innerHTML);
+			 localStorage.setItem("location",wtext[4].value);
+			 localStorage.setItem("message",wtext[5].value);
+		}
+		function saveP(){
+			 localStorage.setItem("salutationsP", wtext[0].innerHTML);
+			 localStorage.setItem("name1P",wtext[1].innerHTML);
+			 localStorage.setItem("name2P",wtext[2].innerHTML);
+			 localStorage.setItem("dateP",wtext[3].innerHTML);
+			 localStorage.setItem("locationP",wtext[4].value);
+			 localStorage.setItem("messageP",wtext[5].value);
+		}
+		function saved2(){
+			localStorage.setItem("salutations2", atext[0].innerHTML);
+			localStorage.setItem("title",atext[1].innerHTML);
+			localStorage.setItem("graduate",atext[2].innerHTML);
+			localStorage.setItem("class",atext[3].innerHTML);
+			localStorage.setItem("date2",atext[4].innerHTML);
+			localStorage.setItem("location2",atext[5].value);
+			localStorage.setItem("message2",atext[6].value)
+		}
+		function save2P(){
+			localStorage.setItem("salutations2P", atext[0].innerHTML);
+			localStorage.setItem("titleP",atext[1].innerHTML);
+			localStorage.setItem("graduateP",atext[2].innerHTML);
+			localStorage.setItem("classP",atext[3].innerHTML);
+			localStorage.setItem("date2P",atext[4].innerHTML);
+			localStorage.setItem("location2P",atext[5].value);
+			localStorage.setItem("message2P",atext[6].value)
+		}
+		function load(){
+			wtext[0].innerHTML = localStorage.getItem("salutations");
+			wtext[1].innerHTML = localStorage.getItem("name1");
+			wtext[2].innerHTML = localStorage.getItem("name2");
+			wtext[3].innerHTML = localStorage.getItem("date");
+			wtext[4].value = localStorage.getItem("location");
+			wtext[5].value = localStorage.getItem("message");
+		}
+		function loadP(){
+			wtext[0].innerHTML = localStorage.getItem("salutationsP");
+			wtext[1].innerHTML = localStorage.getItem("name1P");
+			wtext[2].innerHTML = localStorage.getItem("name2P");
+			wtext[3].innerHTML = localStorage.getItem("dateP");
+			wtext[4].value = localStorage.getItem("locationP");
+			wtext[5].value = localStorage.getItem("messageP");
+		}
+		function load2(){
+			atext[0].innerHTML = localStorage.getItem("salutations2");
+			atext[1].innerHTML = localStorage.getItem("title");
+			atext[2].innerHTML = localStorage.getItem("graduate");
+			atext[3].innerHTML = localStorage.getItem("class");
+			atext[4].innerHTML = localStorage.getItem("date2");
+			atext[5].value = localStorage.getItem("location2");
+			atext[6].value = localStorage.getItem("message2");
+		}
+		function load2P(){
+			atext[0].innerHTML = localStorage.getItem("salutations2P");
+			atext[1].innerHTML = localStorage.getItem("titleP");
+			atext[2].innerHTML = localStorage.getItem("graduateP");
+			atext[3].innerHTML = localStorage.getItem("classP");
+			atext[4].innerHTML = localStorage.getItem("date2P");
+			atext[5].value = localStorage.getItem("location2P");
+			atext[6].value = localStorage.getItem("message2P");
+		}
+		function changeSize(option){
+			var title = document.getElementById("ctitle");
+			var head = document.getElementById("chead");
+			var body = document.getElementById("cbody");
+			var message = document.getElementById("insMessage");
+			var invited = document.getElementById("invited");
+
+			if (option == 1){
+				title.style.fontSize = "1.4em";
+				head.style.fontSize = "2.2em";
+				body.style.fontSize = "1.4em";
+				message.style.fontSize = "1.4em";
+			} else if (option == 2){
+				title.style.fontSize = "1.6em";
+				head.style.fontSize = "2.4em";
+				body.style.fontSize = "1.6em";
+				message.style.fontSize = "1.6em";
+			} else if (option == 0){
+				title.style.fontSize = "1.2em";
+				head.style.fontSize = "2em";
+				body.style.fontSize = "1.2em";
+				message.style.fontSize = "1.2em"
+			}
+		}
+		function changeFColor(){
+			var color = document.getElementById("color1");
+
+			var title = document.getElementById("ctitle");
+			var head = document.getElementById("chead");
+			var body = document.getElementById("cbody");
+			var message = document.getElementById("insMessage");
+
+			title.style.color = color.value;
+			head.style.color = color.value;
+			body.style.color = color.value;
+			message.style.color = color.value;
+		}
+		function changeBGColor() {
+			var color = document.getElementById("color2");
+
+			var bg = document.getElementById("card");
+
+			bg.style.backgroundColor = color.value;
+		}
+		function headFont(option){
+			var groom = document.getElementById("insName1");
+			var bride = document.getElementById("insName2");
+			var and = document.getElementById("and");
+
+			if (option == 0) {
+				groom.style.fontFamily = "Edwardian Script ITC";
+				bride.style.fontFamily = "Edwardian Script ITC";
+				and.style.fontFamily = "Edwardian Script ITC";
+			} else if (option == 1) {
+				groom.style.fontFamily = "Grand Hotel";
+				bride.style.fontFamily = "Grand Hotel";
+				and.style.fontFamily = "Grand Hotel";
+			} else if (option == 2) {
+				groom.style.fontFamily = "Lora";
+				bride.style.fontFamily = "Lora";
+				and.style.fontFamily = "Lora";
+			} else if (option == 3) {
+				groom.style.fontFamily = "Playfair Display";
+				bride.style.fontFamily = "Playfair Display";
+				and.style.fontFamily = "Playfair Display";
+			} else if (option == 4) {
+				groom.style.fontFamily = "Satisfy";
+				bride.style.fontFamily = "Satisfy";
+				and.style.fontFamily = "Satisfy";
+			}
+		}
+		function cFont(option) {
+			var salutations = document.getElementById("insSalutation");
+			var invited = document.getElementById("invited");
+			var date = document.getElementById("insDate");
+			var location = document.getElementById("insLocation");
+			var message = document.getElementById("insMessage");
+			var title = document.getElementById("insTitle");
+			var insClass = document.getElementById("insClass");
+			var graduate = document.getElementById("insName");
+			var honors = document.getElementById("honor");
+
+			if (option == 0) {
+				salutations.style.fontFamily = "Helvetica";
+				invited.style.fontFamily = "Helvetica";
+				date.style.fontFamily = "Helvetica";
+				location.style.fontFamily = "Helvetica";
+				message.style.fontFamily = "Helvetica";
+				title.style.fontFamily = "Helvetica";
+				insClass.style.fontFamily = "Helvetica";
+				graduate.style.fontFamily = "Helvetica";
+				honors.style.fontFamily = "Helvetica";
+			} else if (option == 1) {
+				salutations.style.fontFamily = "EB Garamond";
+				invited.style.fontFamily = "EB Garamond";
+				date.style.fontFamily = "EB Garamond";
+				location.style.fontFamily = "EB Garamond";
+				message.style.fontFamily = "EB Garamond";
+				title.style.fontFamily = "EB Garamond";
+				insClass.style.fontFamily = "EB Garamond";
+				graduate.style.fontFamily = "EB Garamond";
+				honors.style.fontFamily = "EB Garamond";
+			} else if (option == 2) {
+				salutations.style.fontFamily = "GFS Didot";
+				invited.style.fontFamily = "GFS Didot";
+				date.style.fontFamily = "GFS Didot";
+				location.style.fontFamily = "GFS Didot";
+				message.style.fontFamily = "GFS Didot";
+				title.style.fontFamily = "GFS Didot";
+				insClass.style.fontFamily = "GFS Didot";
+				graduate.style.fontFamily = "GFS Didot";
+				honors.style.fontFamily = "GFS Didot";
+			} else if (option == 3) {
+				salutations.style.fontFamily = "Roboto";
+				invited.style.fontFamily = "Roboto";
+				date.style.fontFamily = "Roboto";
+				location.style.fontFamily = "Roboto";
+				message.style.fontFamily = "Roboto";
+				title.style.fontFamily = "Roboto";
+				insClass.style.fontFamily = "Roboto";
+				graduate.style.fontFamily = "Roboto";
+				honors.style.fontFamily = "Roboto";
+			} else if (option == 4) {
+				salutations.style.fontFamily = "Calibri";
+				invited.style.fontFamily = "Calibri";
+				date.style.fontFamily = "Calibri";
+				location.style.fontFamily = "Calibri";
+				message.style.fontFamily = "Calibri";
+				title.style.fontFamily = "Calibri";
+				insClass.style.fontFamily = "Calibri";
+				graduate.style.fontFamily = "Calibri";
+				honors.style.fontFamily = "Calibri";
+			}
+
+		}
+		function changeBG(option) {
+			var card = document.getElementById("card");
+
+			if (option == 1){
+				card.style.background = "url('https://i.pinimg.com/originals/56/f9/e2/56f9e272de8708a62f2b94d941382415.jpg')";
+				card.style.backgroundSize = "cover";
+			} else if (option == 2){
+				card.style.background = "url('images/marble1.jpg')";
+				card.style.backgroundSize = "cover";
+			} else if (option == 3){
+				card.style.background = "url('images/marble2.jpg')";
+				card.style.backgroundSize = "cover";
+			}
+		}
+		window.location.hash = "#!first";
+
+	</script>
+</head>
+<body onload="loadP(), load2P()">
+	<header>
+		<div id="title">E-CARDS ONLINE</div>
+		<div id="home"><a href="index.html">HOME</a></div>
+	</header>
+	<div id="editor">
+	<nav>
+   		<a href="#first" onclick="revert2()">Tmp</a>
+  		<a href="#second" onclick="revert()">Txt</a>
+   		<a href="#third" onclick="revert()">Img</a>
+   		<a href="#fourth" onclick="revert()">Clr</a>
+ 	</nav>
+  
+	<div class= "container"> 
+  		<section id="first">
+  			<button onclick="tFirst(), reveal()">First</button>
+  			<button onclick="tSecond(), reveal()">Second</button>
+  		</section>
+  
+  		<section>
+    		<div class="info" >
+    			<label for="salutations">Salutations</label>
+    			<div class="textbox wtext" contenteditable="true"></div>
+    			<label>Preset Greetings:</label>
+    			<select onchange="greet(this.value)">
+    				<option value="0">Select a greeting</option>
+    				<option value="1">Assalamualaikum</option>
+    				<option value="2">Dear</option>
+    			</select>
+    			<label>Preset Honorifics:</label>
+    			<select onchange="honorific(this.value)">
+    				<option value="0">Select an honorific</option>
+    				<option value="1">Sir</option>
+    				<option value="2">Madam</option>
+    				<option value="3">Dr.</option>
+    				<option value="4">Mr.</option>
+    				<option value="5">Mrs.</option>
+    			</select> <br>
+    			<label for="name1">Groom Name:</label>
+				<div class="textbox wtext" contenteditable="true"></div>
+				<label for="name2">Bride Name:</label>
+				<div class="textbox wtext" contenteditable="true"></div>
+				<label for="date">Date:</label>
+				<div class="textbox wtext" contenteditable="true"></div>
+				<label for="location">Location:</label>
+				<textarea id="location" class="textbox wtext" contenteditable="true"></textarea>
+				<label for="message">Message:</label>
+				<textarea id="message" class="textbox wtext" contenteditable="true"></textarea>
+				<label>Font Size:</label>
+				<select onchange="changeSize(this.value)">
+					<option value="0">Size 1</option>
+					<option value="1">Size 2</option>
+					<option value="2">Size 3</option>
+				</select>
+				<label>Font: </label>
+				<select onchange="cFont(this.value)">
+					<option value="0">Helvetica</option>
+					<option value="1">EB Garamond</option>
+					<option value="2">GFS Didot</option>
+					<option value="3">Roboto</option>
+					<option value="4">Calibri</option>
+				</select>
+				<label>Bride & Groom Font: </label>
+				<select onchange="headFont(this.value)">
+					<option value="0">Edwardian Script ITC</option>
+					<option value="1">Grand Hotel</option>
+					<option value="2">Lora</option>
+					<option value="3">Playfair Display</option>
+					<option value="4">Satisfy</option>
+				</select>
+				<button onclick="load()">Load favourite</button>
+				<button onclick="saved()">Mark as favourite</button>
+				<button>Reset</button>
+				<button onclick="onClick(), saveP()">Preview</button>
+			</div>
+  		</section>
+  		<section id="second">
+    		<div class="info">
+    			<label for="salutations">Salutations</label>
+    			<div class="textbox atext" contenteditable="true"></div>
+    			<label>Preset Greetings:</label>
+    			<select onchange="greet(this.value)">
+    				<option value="0">Select a greeting</option>
+    				<option value="1">Assalamualaikum</option>
+    				<option value="2">Dear</option>
+    			</select>
+    			<label>Preset Honorifics:</label>
+    			<select onchange="honorific(this.value)">
+    				<option value="0">Select an honorific</option>
+    				<option value="1">Sir</option>
+    				<option value="2">Madam</option>
+    				<option value="3">Dr.</option>
+    				<option value="4">Mr.</option>
+    				<option value="5">Mrs.</option>
+    			</select> <br>
+    			<label for="header">Title: </label>
+    			<div class="textbox atext" contenteditable="true"></div>
+    			<label for="name">Graduate: </label>
+    			<div class="textbox atext" contenteditable="true"></div>
+    			<label for="name">Class of:</label>
+    			<div class="textbox atext" contenteditable="true"></div>
+				<label for="date">Date: </label>
+				<div class="textbox atext" contenteditable="true"></div>
+				<label for="location">Location: </label>
+				<textarea id="location" class="textbox atext" contenteditable="true"></textarea>
+				<label for="message">Message: </label>
+				<textarea id="message" class="textbox atext" contenteditable="true"></textarea>
+				<label>Font Size:</label>
+				<select onchange="changeSize(this.value)">
+					<option value="0">Size 1</option>
+					<option value="1">Size 2</option>
+					<option value="2">Size 3</option>
+				</select>
+				<label>Font: </label>
+				<select onchange="cFont(this.value)">
+					<option value="0">Helvetica</option>
+					<option value="1">EB Garamond</option>
+					<option value="2">GFS Didot</option>
+					<option value="3">Roboto</option>
+					<option value="4">Calibri</option>
+				</select>
+				<button onclick="load2()">Load favourite</button>
+				<button onclick="saved2()">Mark as favourite</button>
+				<button>Reset</button>
+				<button onclick="onClick2(), save2P()">Preview</button>
+			</div>
+  		</section>
+  
+ 		<section id= "third">
+ 			<div class="info">
+ 				<label>Background: </label>
+ 				<select onchange="changeBG(this.value)">
+ 					<option value="0">Pick a background</option>
+ 					<option value="1">White Marble</option>
+ 					<option value="2">Blue Marble</option>
+ 					<option value="3">Rose Gold Marble</option>
+ 				</select>
+ 				<div class="imgcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+ 					<img class="bimg" src="images/border2.png" id="drag1" draggable="true" ondragstart="drag(event)">
+ 				</div>
+ 				<div class="imgcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+ 					<img class="bimg" src="images/border1.png" id="drag2" draggable="true" ondragstart="drag(event)">
+ 				</div>
+ 				<div class="imgcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+ 					<img class="bimg" src="images/border3.png" id="drag3" draggable="true" ondragstart="drag(event)">
+ 				</div>
+ 					
+ 				
+ 			</div>
+  		</section>
+  
+ 		<section id= "fourth">
+ 			<div class="info">
+ 				<label>Font Color: </label>
+				<input type="color" id="color1" onchange="changeFColor()">
+				<label>Background Color: </label>
+				<input type="color" id="color2" onchange="changeBGColor()">
+			</div>
+  		</section>
+	</div>
+</div>
+	<div id="preview">
+		<h2>Preview:</h2>
+		
+		<div id="card">
+			<div id="border" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+			<div id="ctext"></div>
+		</div>
+		
+	</div>
+	
+	
+
+</body>
+</html>
