@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Informal Card Editor</title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=EB+Garamond|Helvetica|GFS+Didot|Roboto|Grand+Hotel|Lora|Playfair+Display|Satisfy|Marck+Script|Handlee|Patrick+Hand|ABeeZee|Kalam">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<style type="text/css">
+		#ctext{
+			padding: 2vw;
+		}
+		#insName, #insLocation, #insMessage, #insSalutaions, #invited, #insAge, #insTitle, #insDate, #insTime{
+			font-family: 'ABeeZee';
+		}
+		#test{
+			cursor: pointer;
+		}
+	</style>
+	<script type="text/javascript">
+		// design ideas : marble, velvet
+		// corporate: Conference/Seminar, Team-Building event
+		// informal: Birthday, Hari Raya
+		// formal: Wedding, Award ceremony
+
+		const wtext = document.getElementsByClassName("wtext");
+		const atext = document.getElementsByClassName("atext");
+		const greeting = ["","Assalamualaikum ", "Dear ", "Greetings ", "Hello ", "Good day ", "Hi there "];
+		const honor = ["", "Sir,", "Madam,", "Dr.,", "Mr.,", "Mrs.,"];
+
+		localStorage.setItem("Assalamualaikum", "Assalamualaikum ");
+		localStorage.setItem("Dear", "Dear ");
+		localStorage.setItem("Sir", "Sir, ");
+		localStorage.setItem("Madam", "Madam, ");
+		localStorage.setItem("Dr.", "Dr., ");
+		localStorage.setItem("Mr.", "Mr., ");
+		localStorage.setItem("Mrs.", "Mrs., ");
+		localStorage.setItem("Greetings", "Greetings ");
+		localStorage.setItem("Hello", "Hello ");
+		localStorage.setItem("Good day", "Good day ");
+		localStorage.setItem("Hi there", "Hi there ");
+
+		function greet(option){
+			wtext[0].innerHTML = wtext[0].innerHTML + localStorage.getItem(option);
+		}
+		function greet2(option){
+			atext[0].innerHTML = atext[0].innerHTML + localStorage.getItem(option);	
+		}
+
+		function onClick(){
+			var insName = document.getElementById("insName");
+			var insDate = document.getElementById("insDate");
+			var insLocation = document.getElementById("insLocation");
+			var insMessage = document.getElementById("insMessage");
+			var insSalutation = document.getElementById("insSalutation");
+			var insTime = document.getElementById("insTime");
+			var insTitle = document.getElementById("insTitle");
+			var insAge = document.getElementById("insAge");
+
+			insSalutation.innerHTML= wtext[0].innerHTML;
+			insName.innerHTML = wtext[1].innerHTML + "'s";
+			insAge.innerHTML = wtext[2].innerHTML + "th";
+			insTitle.innerHTML = wtext[3].innerHTML;
+			insDate.innerHTML = wtext[4].innerHTML + " | ";
+			insTime.innerHTML = wtext[5].value;
+			insMessage.innerHTML = wtext[6].value;
+			insLocation.innerHTML = wtext[7].value;
+
+		}
+		function reset1() {
+			var insName = document.getElementById("insName");
+			var insDate = document.getElementById("insDate");
+			var insLocation = document.getElementById("insLocation");
+			var insMessage = document.getElementById("insMessage");
+			var insSalutation = document.getElementById("insSalutation");
+			var insTime = document.getElementById("insTime");
+			var insTitle = document.getElementById("insTitle");
+			var insAge = document.getElementById("insAge");
+
+			insSalutation.innerHTML= "Salutations";
+			insName.innerHTML = "Name's";
+			insAge.innerHTML = "xxth";
+			insTitle.innerHTML = "Birthday";
+			insDate.innerHTML ="Date | ";
+			insTime.innerHTML = "Time";
+			insMessage.innerHTML = "Message";
+			insLocation.innerHTML = "Location";
+
+			for (let i = 0; 1 < wtext.length; i++){
+				wtext[i].innerHTML = "";
+				if (i == 5 || i == 6 || i == 7){
+					wtext[i].value = "";
+				}
+			}
+		}
+		function preview(){
+			var card = document.getElementById("card");
+			var overlay = document.getElementById("overlay");
+
+			overlay.style.display = "block";
+			card.style.animation = "preview 0.3s ease-out both";
+		}
+		function previewEnd(){
+			var card = document.getElementById("card");
+			var overlay = document.getElementById("overlay");
+
+			overlay.style.display = "none";
+			card.style.animation = "previewEnd 0.1s ease-in both";
+		}
+
+		function onClick2() {
+			var insSalutation = document.getElementById("insSalutation");
+			var insTitle = document.getElementById("insTitle");
+			var insDate = document.getElementById("insDate");
+			var insTime = document.getElementById("insTime");
+			var insLocation = document.getElementById("insLocation");
+			var insMessage = document.getElementById("insMessage");
+
+			insSalutation.innerHTML = atext[0].innerHTML;
+			insTitle.innerHTML = atext[1].innerHTML;
+			insMessage.innerHTML = atext[2].value;
+			insDate.innerHTML = "Date: " + atext[3].innerHTML;
+			insTime.innerHTML = "Time: " + atext[4].value;
+			insLocation.innerHTML = "Location: " + atext[5].value;
+		}
+		function reset2() {
+			var insSalutation = document.getElementById("insSalutation");
+			var insTitle = document.getElementById("insTitle");
+			var insDate = document.getElementById("insDate");
+			var insTime = document.getElementById("insTime");
+			var insLocation = document.getElementById("insLocation");
+			var insMessage = document.getElementById("insMessage");
+
+			insSalutation.innerHTML = "Salutations";
+			insTitle.innerHTML = "Hari Raya Open House";
+			insMessage.innerHTML = "Message";
+			insDate.innerHTML = "Date";
+			insTime.innerHTML = "Time";
+			insLocation.innerHTML = "Location";
+
+			for (let i = 0; 1 < atext.length; i++){
+				atext[i].innerHTML = "";
+				if (i == 2 || i == 4 || i == 5){
+					atext[i].value = "";
+				}
+			}
+		}
+		function revert() {
+			var template = document.getElementById("first");
+			template.style.opacity = 0;
+		}
+		function revert2() {
+			var template = document.getElementById("first");
+			template.style.opacity = 1;
+		}
+		function allowDrop(ev) {
+ 			ev.preventDefault();
+		}
+
+		function drag(ev) {
+  			ev.dataTransfer.setData("text", ev.target.id);
+		}
+
+		function drop(ev) {
+			var cborder = document.getElementById("border");
+
+  			ev.preventDefault();
+  			var data = ev.dataTransfer.getData("text");
+
+  			ev.target.appendChild(document.getElementById(data).cloneNode(true));
+		}
+		function rBorder() {
+			var border = document.getElementById("border");
+
+			if (border.hasChildNodes()){
+				border.removeChild(border.firstChild);
+			}
+		}
+		function tFirst() {
+			var first = document.getElementsByTagName("section")[1];
+			var second = document.getElementsByTagName("section")[2];
+			var third = document.getElementsByTagName("section")[3];
+			var fourth = document.getElementsByTagName("section")[4];
+			var bg = document.getElementById("card");
+			var border = document.getElementById("border");
+
+			if (border.hasChildNodes()){
+				border.removeChild(border.firstChild);
+			}
+			second.removeAttribute("id");
+			first.setAttribute('id', 'second');
+			fourth.removeAttribute("id");
+			third.setAttribute('id', 'third');
+			bg.style.background = "";
+
+			var card = document.getElementById("ctext");
+
+			while (card.hasChildNodes()){
+				card.removeChild(card.firstChild);
+			}
+
+			var span1 = document.createElement('span');
+			span1.setAttribute('id', 'insSalutation');
+
+			var span2 = document.createElement('span');
+			span2.setAttribute('id', 'invited');
+
+			var span3 = document.createElement('span');
+			span3.setAttribute('id', 'insName');
+
+			var span4 = document.createElement('span');
+			span4.setAttribute('id', 'insAge');
+
+			var span5 = document.createElement('span');
+			span5.setAttribute('id', 'insTitle');
+
+			var span6 = document.createElement('span');
+			span6.setAttribute('id', 'insDate');
+
+			var span7 = document.createElement('span');
+			span7.setAttribute('id', 'insTime');
+
+			var span8 = document.createElement('message');
+			span8.setAttribute('id', 'insMessage');
+			span8.style.cssText = "font-size: 1.1em; text-align: center; word-wrap: normal";
+
+			var span9 = document.createElement('span');
+			span9.setAttribute('id', 'insLocation');
+			span9.style.cssText = "font-size: 1.2em; text-align:center; word-wrap: normal";
+
+			var title = document.createElement('div');
+			title.setAttribute('id', 'ctitle');
+			title.appendChild(span1);
+			title.appendChild(span2);
+			title.style.cssText = "display: flex; flex-direction: column; align-items:center; font-size: 1.2em; text-align: center"
+
+			var body = document.createElement('div');
+			body.setAttribute('id', 'cbody');
+			body.appendChild(span6);
+			body.appendChild(span7);
+			body.style.cssText = "display: block; font-size: 1.2em; text-align: center";
+
+			var head = document.createElement('div');
+			head.setAttribute('id', 'chead');
+			head.appendChild(span3);
+			head.appendChild(span4);
+			head.appendChild(span5);
+			head.style.cssText = "display: flex; flex-direction: column; align-items:center; font-size: 2em; text-align: center";
+			span4.style.fontSize = "2.2em";
+
+			var card = document.getElementById("ctext");
+
+			card.appendChild(title);
+			card.appendChild(head);
+			card.appendChild(body);
+			card.appendChild(span8);
+			card.appendChild(span9);
+
+			span1.innerHTML = "Salutations";
+			span2.innerHTML = "You are invited to...";
+			span3.innerHTML = "Name's";
+			span4.innerHTML = "xxth";
+			span5.innerHTML = "Birthday";
+			span6.innerHTML = "Date | ";
+			span7.innerHTML = "Time";
+			span8.innerHTML = "Message";
+			span9.innerHTML = "Location";
+
+		}
+		function tSecond() {
+			var first = document.getElementsByTagName("section")[1];
+			var second = document.getElementsByTagName("section")[2];
+			var third = document.getElementsByTagName("section")[3];
+			var fourth = document.getElementsByTagName("section")[4];
+			var bg = document.getElementById("card");
+
+			var card = document.getElementById("ctext");
+
+			while (card.hasChildNodes()){
+				card.removeChild(card.firstChild);
+			}
+
+			first.removeAttribute("id");
+			second.setAttribute('id', 'second');
+			third.removeAttribute("id");
+			fourth.setAttribute('id', 'third');
+			bg.style.background = "";
+			var border = document.getElementById("border");
+
+			if (border.hasChildNodes()){
+				border.removeChild(border.firstChild);
+			}
+
+			var img = document.createElement('img');
+			img.setAttribute('id', 'insIcon')
+			img.setAttribute('src', 'images/hr.png');
+			img.style.width = "70%";
+
+			var span1 = document.createElement('span');
+			span1.setAttribute('id', 'insSalutation');
+			
+			var span2 = document.createElement('span');
+			span2.setAttribute('id', 'invited');
+
+			var span3 = document.createElement('span');
+			span3.setAttribute('id', 'insTitle');
+
+			var span4 = document.createElement('span');
+			span4.setAttribute('id', 'insMessage');
+			span4.style.cssText = "font-size: 1em; text-align:center; word-wrap: normal";
+
+			var span5 = document.createElement('span');
+			span5.setAttribute('id', 'insDate');
+
+			var span6 = document.createElement('span');
+			span6.setAttribute('id', 'insTime');
+
+			var span7 = document.createElement('span');
+			span7.setAttribute('id', 'insLocation');
+			span7.style.cssText = "text-align:center; word-wrap: normal";
+
+			var title = document.createElement('div');
+			title.setAttribute('id', 'ctitle');
+			title.appendChild(span1);
+			title.appendChild(span2);
+			title.style.cssText = "display: flex; flex-direction: column; align-items:center; font-size: 1.1em; text-align: center;";
+
+			var head = document.createElement('div');
+			head.setAttribute('id', 'chead');
+			head.appendChild(span3);
+			head.style.cssText = "display: flex; flex-direction: column; align-items:center; font-size: 2em; text-align: center;";
+
+			var body = document.createElement('div');
+			body.setAttribute('id', 'cbody');
+			body.appendChild(span5);
+			body.appendChild(span6);
+			body.appendChild(span7);
+			body.style.cssText = "display: flex; flex-direction: column; align-items:center; font-size: 1.1em; text-align: center;";
+
+			var box = document.createElement('div');
+			box.setAttribute('id', 'cbox');
+			box.appendChild(title);
+			box.appendChild(head);
+			box.appendChild(span4);
+			box.appendChild(body);
+			box.style.cssText = "display: flex; flex-direction: column; align-items:center; background-color: #733FD7; width: 100%; height: 70%; justify-content: space-around; padding: 10px; color: white;";
+
+			card.appendChild(img);
+			card.appendChild(box);
+
+			span1.innerHTML = "Salutations";
+			span2.innerHTML = "We'd like to invite you and your family to";
+			span3.innerHTML = "Hari Raya Open House";
+			span4.innerHTML = "Message";
+			span5.innerHTML = "Date";
+			span6.innerHTML = "Time";
+			span7.innerHTML = "Location";
+		}
+		function reveal(){
+			var two = document.getElementsByTagName("a")[2];
+			var three = document.getElementsByTagName("a")[3];
+			var four = document.getElementsByTagName("a")[4];
+			var second = document.getElementById("second");
+			var third = document.getElementById("third");
+			var fourth = document.getElementById("fourth");
+
+			two.style.visibility  = "visible";
+			two.style.animation = "reveal 0.3s ease-in";
+			three.style.visibility = "visible";
+			three.style.animation = "reveal 0.3s ease-in";
+			four.style.visibility  = "visible";
+			four.style.animation = "reveal 0.3s ease-in";
+		}
+		function changeSize(option){
+			var title = document.getElementById("ctitle");
+			var head = document.getElementById("chead");
+			var body = document.getElementById("cbody");
+			var message = document.getElementById("insMessage");
+			var invited = document.getElementById("invited");
+			var location = document.getElementById("insLocation");
+			var age = document.getElementById("insAge");
+
+			if (option == 1){
+				title.style.fontSize = "1.4em";
+				head.style.fontSize = "2.2em";
+				age.style.fontSize = "2.4em";
+				body.style.fontSize = "1.4em";
+				message.style.fontSize = "1.3em";
+				location.style.fontSize = "1.4em";
+			} else if (option == 2){
+				title.style.fontSize = "1.6em";
+				head.style.fontSize = "2.4em";
+				age.style.fontSize = "2.6em";
+				body.style.fontSize = "1.6em";
+				message.style.fontSize = "1.5em";
+				location.style.fontSize = "1.6em";
+			} else if (option == 0){
+				title.style.fontSize = "1.2em";
+				head.style.fontSize = "2em";
+				age.style.fontSize = "2.2em";
+				body.style.fontSize = "1.2em";
+				message.style.fontSize = "1.1em";
+				location.style.fontSize = "1.2em";
+			}
+		}
+		function changeSize2(option){
+			var title = document.getElementById("ctitle");
+			var head = document.getElementById("chead");
+			var body = document.getElementById("cbody");
+			var message = document.getElementById("insMessage");
+			var location = document.getElementById("insLocation");
+			var invited = document.getElementById("invited");
+
+			if (option == 1){
+				title.style.fontSize = "1.3em";
+				head.style.fontSize = "2.2em";
+				body.style.fontSize = "1.3em";
+				message.style.fontSize = "1.2em";
+			} else if (option == 2){
+				title.style.fontSize = "1.5em";
+				head.style.fontSize = "2.4em";
+				body.style.fontSize = "1.5em";
+				message.style.fontSize = "1.4em";
+			} else if (option == 0){
+				title.style.fontSize = "1.1em";
+				head.style.fontSize = "2em";
+				body.style.fontSize = "1.1em";
+				message.style.fontSize = "1em";
+			}
+
+
+		}
+		function changeFColor1(){
+			var color = document.getElementById("color1");
+
+			var title = document.getElementById("ctitle");
+			var head = document.getElementById("chead");
+			var body = document.getElementById("cbody");
+			var message = document.getElementById("insMessage");
+			var location = document.getElementById("insLocation");
+
+			title.style.color = color.value;
+			head.style.color = color.value;
+			body.style.color = color.value;
+			message.style.color = color.value;
+			location.style.color = color.value;
+		}
+		function changeFColor2(){
+			var color2 = document.getElementById("colorb");
+
+			var title = document.getElementById("ctitle");
+			var head = document.getElementById("chead");
+			var body = document.getElementById("cbody");
+			var message = document.getElementById("insMessage");
+			var location = document.getElementById("insLocation");
+
+			title.style.color = color2.value;
+			head.style.color = color2.value;
+			body.style.color = color2.value;
+			message.style.color = color2.value;
+			location.style.color = color2.value;
+		}
+		function changeBGColor() {
+			var color = document.getElementById("color2");
+
+			var bg = document.getElementById("card");
+
+			bg.style.backgroundColor = color.value;
+		}
+		function changeBGColor2() {
+			var color = document.getElementById("color22");
+
+			var bg = document.getElementById("card");
+
+			bg.style.backgroundColor = color.value;
+		}
+		function changeCBGColor() {
+			var cbg = document.getElementById("cbox");
+
+			var color = document.getElementById("ccolor");
+
+			cbox.style.backgroundColor = color.value;
+		}
+		function cFont(option) {
+			var salutations = document.getElementById("insSalutation");
+			var invited = document.getElementById("invited");
+			var date = document.getElementById("insDate");
+			var location = document.getElementById("insLocation");
+			var message = document.getElementById("insMessage");
+			var name = document.getElementById("insName");
+			var title = document.getElementById("insTitle");
+			var age = document.getElementById("insAge");
+			var time = document.getElementById("insTime");
+
+			if (option == 0) {
+				salutations.style.fontFamily = "ABeeZee";
+				invited.style.fontFamily = "ABeeZee";
+				date.style.fontFamily = "ABeeZee";
+				location.style.fontFamily = "ABeeZee";
+				message.style.fontFamily = "ABeeZee";
+				title.style.fontFamily = "ABeeZee";	
+				time.style.fontFamily = "ABeeZee";					
+				name.style.fontFamily = "ABeeZee";				
+				age.style.fontFamily = "ABeeZee";
+
+			} else if (option == 1) {
+				salutations.style.fontFamily = "'Marck Script'";
+				invited.style.fontFamily = "'Marck Script'";
+				date.style.fontFamily = "'Marck Script'";
+				location.style.fontFamily = "'Marck Script'";
+				message.style.fontFamily = "'Marck Script'";
+				title.style.fontFamily = "'Marck Script'";	
+				time.style.fontFamily = "Marck Script";		
+				name.style.fontFamily = "Marck Script";				
+				age.style.fontFamily = "Marck Script";	
+			} else if (option == 2) {
+				salutations.style.fontFamily = "Handlee";
+				invited.style.fontFamily = "Handlee";
+				date.style.fontFamily = "Handlee";
+				location.style.fontFamily = "Handlee";
+				message.style.fontFamily = "Handlee";
+				title.style.fontFamily = "Handlee";	
+				time.style.fontFamily = "Handlee";
+				name.style.fontFamily = "Handlee";				
+				age.style.fontFamily = "Handlee";	
+			} else if (option == 3) {
+				salutations.style.fontFamily = "'Patrick Hand'";
+				invited.style.fontFamily = "'Patrick Hand'";
+				date.style.fontFamily = "'Patrick Hand'";
+				location.style.fontFamily = "'Patrick Hand'";
+				message.style.fontFamily = "'Patrick Hand'";
+				title.style.fontFamily = "'Patrick Hand'";	
+				time.style.fontFamily = "'Patrick Hand'";			
+				name.style.fontFamily = "'Patrick Hand'";				
+				age.style.fontFamily = "'Patrick Hand'";
+			} else if (option == 4) {
+				salutations.style.fontFamily = "Kalam";
+				invited.style.fontFamily = "Kalam";
+				date.style.fontFamily = "Kalam";
+				location.style.fontFamily = "Kalam";
+				message.style.fontFamily = "Kalam";
+				title.style.fontFamily = "Kalam";		
+				time.style.fontFamily = "Kalam";	
+				name.style.fontFamily = "Kalam";				
+				age.style.fontFamily = "Kalam";	
+			}
+		}
+		
+		function changeBG(option) {
+			var card = document.getElementById("card");
+
+			if (option == 1){
+				card.style.background = "url('images/bdbg.jpg')";
+				card.style.backgroundSize = "cover";
+			} else if (option == 2){
+				card.style.background = "url('images/bdbg2.jpg')";
+				card.style.backgroundSize = "cover";
+			} else if (option == 3){
+				card.style.background = "url('images/bdbg3.jpg')";
+				card.style.backgroundSize = "cover";
+			} else if (option == 0){
+				card.style.background = "";
+			}
+				// <a href='https://pngtree.com/free-backgrounds'>free background photos from pngtree.com</a>
+		}
+		function changeBG2(option) {
+			var card = document.getElementById("card");
+
+			if (option == 1){
+				card.style.background = "url('images/hrbg1.jpg')";
+				card.style.backgroundSize = "cover";
+			} else if (option == 2){
+				card.style.background = "url('images/hrbg2.jpg')";
+				card.style.backgroundSize = "cover";
+			} else if (option == 3){
+				card.style.background = "url('images/hrbg3.png')";
+				card.style.backgroundSize = "cover";
+			} else if (option == 0){
+				card.style.background = "";
+			}
+		}
+		function rBG() {
+			var bg = document.getElementById("card")
+
+			bg.style.background = "";
+		}
+		function changeIcon(option) {
+			var icon = document.getElementById("insIcon");
+			icon.removeAttribute("src");
+
+			if (option == 1){
+				icon.setAttribute('src', 'images/hr.png');
+			} else if (option == 2){
+				icon.setAttribute('src', 'images/hr2.png');
+			} else if (option == 3){
+				icon.setAttribute('src', 'images/hr3.png');
+				icon.style.width = "60%";
+			}
+		}
+		function bClick(option) {
+			var border = document.getElementById("border");
+
+			if (border.hasChildNodes()){
+				border.removeChild(border.firstChild);
+			}
+
+			var img = document.createElement('img');
+			img.setAttribute('src', option);
+			img.style.cssText = "width: 100%; height: 100%";
+
+			border.appendChild(img);
+
+		}
+		function send() {
+			alert("The card has been sent to " + document.getElementById("email").innerHTML);
+		}
+		window.location.hash = "#first";
+
+		function saved(){
+			var card = document.getElementById("card");
+			var border = document.getElementById("border");
+
+			 localStorage.setItem("if-salutations", wtext[0].innerHTML);
+			 localStorage.setItem("if-name",wtext[1].innerHTML);
+			 localStorage.setItem("if-age",wtext[2].innerHTML);
+			 localStorage.setItem("if-title",wtext[3].innerHTML);
+			 localStorage.setItem("if-date",wtext[4].innerHTML);
+			 localStorage.setItem("if-time",wtext[5].value);
+			 localStorage.setItem("if-message",wtext[6].value);
+			 localStorage.setItem("if-location",wtext[7].value);
+			 localStorage.setItem("if-fontSize1a", document.getElementById("ctitle").style.fontSize);
+			 localStorage.setItem("if-fontSize1b", document.getElementById("chead").style.fontSize);
+			 localStorage.setItem("if-fontSize1c", document.getElementById("insAge").style.fontSize);
+			 localStorage.setItem("if-fontSize1d", document.getElementById("insMessage").style.fontSize);
+			 localStorage.setItem("if-fontColor1", document.getElementById("color1").value);
+			 localStorage.setItem("if-fontType1", document.getElementById("insMessage").style.fontFamily);
+			 localStorage.setItem("if-bgColor", card.style.backgroundColor);
+			 localStorage.setItem("if-bg", card.style.background);
+
+			 if (border.hasChildNodes()){
+			 	localStorage.setItem("if-border1", border.childNodes[0].getAttribute('src'));
+			 } else {
+			 	localStorage.setItem("if-border1", "");
+			 }
+			 
+		}
+		function ifsaveP(){
+			 localStorage.setItem("if-salutationsP", wtext[0].innerHTML);
+			 localStorage.setItem("if-nameP",wtext[1].innerHTML);
+			 localStorage.setItem("if-ageP",wtext[2].innerHTML);
+			 localStorage.setItem("if-titleP",wtext[3].innerHTML);
+			 localStorage.setItem("if-dateP",wtext[4].innerHTML);
+			 localStorage.setItem("if-timeP",wtext[5].value);
+			 localStorage.setItem("if-messageP",wtext[6].value);
+			 localStorage.setItem("if-locationP",wtext[7].value);
+		}
+		function saved2(){
+			var card = document.getElementById("card");
+			var border = document.getElementById("border");
+
+			localStorage.setItem("if-salutations2", atext[0].innerHTML);
+			localStorage.setItem("if-title2", atext[1].innerHTML);
+			localStorage.setItem("if-message2", atext[2].value);
+			localStorage.setItem("if-date2", atext[3].innerHTML);
+			localStorage.setItem("if-time2", atext[4].value);
+			localStorage.setItem("if-location2", atext[5].value);
+			localStorage.setItem("if-fontSize2a", document.getElementById("ctitle").style.fontSize);
+			localStorage.setItem("if-fontSize2b", document.getElementById("chead").style.fontSize);
+			localStorage.setItem("if-fontSize2c", document.getElementById("insMessage").style.fontSize);
+			localStorage.setItem("if-fontColor2", document.getElementById("insMessage").style.color);
+			localStorage.setItem("if-contentColor", document.getElementById("cbox").style.backgroundColor);
+			localStorage.setItem("if-fontType2", document.getElementById("insMessage").style.fontFamily);
+			localStorage.setItem("if-Icon", document.getElementById("insIcon").getAttribute('src'));
+			localStorage.setItem("if-bg2", card.style.background);
+			localStorage.setItem("if-bgColor2", card.style.backgroundColor );
+
+			if (border.hasChildNodes()){
+			 	localStorage.setItem("if-border2", border.childNodes[0].getAttribute('src'));
+			 } else {
+			 	localStorage.setItem("if-border2", "");
+			 }
+
+			
+		}
+		function ifsave2P(){
+			localStorage.setItem("if-salutations2P", atext[0].innerHTML);
+			localStorage.setItem("if-title2P",atext[1].innerHTML);
+			localStorage.setItem("if-message2P",atext[2].value);
+			localStorage.setItem("if-date2P",atext[3].innerHTML);
+			localStorage.setItem("if-time2P",atext[4].value);
+			localStorage.setItem("if-location2P",atext[5].value);
+		}
+		function load(){
+			var salutations = document.getElementById("insSalutation");
+			var invited = document.getElementById("invited");
+			var date = document.getElementById("insDate");
+			var location = document.getElementById("insLocation");
+			var message = document.getElementById("insMessage");
+			var title = document.getElementById("ctitle");
+			var head = document.getElementById("chead");
+			var body = document.getElementById("cbody");
+			var card = document.getElementById("card");
+			var name = document.getElementById("insName");
+			var age = document.getElementById("insAge");
+			var insTitle = document.getElementById("insTitle");
+			var time = document.getElementById("insTime");
+			var fcolor = document.getElementById("color1");
+			var bgcolor = document.getElementById("color2");
+			var border = document.getElementById("border");
+
+			wtext[0].innerHTML = localStorage.getItem("if-salutations");
+			insSalutation.innerHTML = localStorage.getItem("if-salutations");
+			wtext[1].innerHTML = localStorage.getItem("if-name");
+			name.innerHTML = localStorage.getItem("if-name") + "'s";
+			wtext[2].innerHTML = localStorage.getItem("if-age");
+			age.innerHTML = localStorage.getItem("if-age") + "th";
+			wtext[3].innerHTML = localStorage.getItem("if-title");
+			insTitle.innerHTML = localStorage.getItem("if-title");
+			wtext[4].innerHTML = localStorage.getItem("if-date");
+			date.innerHTML = localStorage.getItem("if-date") + " | ";
+			wtext[5].value = localStorage.getItem("if-time");
+			time.innerHTML = localStorage.getItem("if-time");
+			wtext[6].value = localStorage.getItem("if-message");
+			message.innerHTML = localStorage.getItem("if-message");
+			wtext[7].value = localStorage.getItem("if-location");
+			location.innerHTML = localStorage.getItem("if-location");
+			fcolor.value = localStorage.getItem("if-fontColor1");
+			bgcolor.value = localStorage.getItem("if-bgColor");
+
+
+			if (!(localStorage.getItem("if-border1") == "")){
+
+				while (border.hasChildNodes()){
+				border.removeChild(border.firstChild);
+			}
+
+			var img = document.createElement('img');
+			img.setAttribute('src', localStorage.getItem("if-border1"));
+			img.style.cssText = "width: 100%; height: 100%";
+
+			border.appendChild(img);
+			}
+
+			title.style.fontSize = localStorage.getItem("if-fontSize1a");
+			head.style.fontSize = localStorage.getItem("if-fontSize1b");
+			age.style.fontSize = localStorage.getItem("if-fontSize1c");
+			body.style.fontSize = localStorage.getItem("if-fontSize1a");
+			message.style.fontSize = localStorage.getItem("if-fontSize1d");
+			location.style.fontSize = localStorage.getItem("if-fontSize1a");
+
+			title.style.color = localStorage.getItem("if-fontColor1");
+			head.style.color = localStorage.getItem("if-fontColor1");
+			body.style.color = localStorage.getItem("if-fontColor1");
+			message.style.color = localStorage.getItem("if-fontColor1");
+			location.style.color = localStorage.getItem("if-fontColor1");
+			card.style.background = localStorage.getItem("if-bg");
+			card.style.backgroundColor = localStorage.getItem("if-bgColor");
+
+			salutations.style.fontFamily = "" + localStorage.getItem("if-fontType1") + "";
+			invited.style.fontFamily = "" + localStorage.getItem("if-fontType1") + "";
+			date.style.fontFamily = "" + localStorage.getItem("if-fontType1") + "";
+			location.style.fontFamily = "" + localStorage.getItem("if-fontType1") + "";
+			message.style.fontFamily = "" + localStorage.getItem("if-fontType1") + "";
+			insTitle.style.fontFamily = "" + localStorage.getItem("if-fontType1") + "";
+			name.style.fontFamily = "" + localStorage.getItem("if-fontType1") + "";				
+			age.style.fontFamily = "" + localStorage.getItem("if-fontType1") + "";
+			time.style.fontFamily = "" + localStorage.getItem("if-fontType1") + "";
+
+		}
+		function ifloadP(){
+			wtext[0].innerHTML = localStorage.getItem("if-salutationsP");
+			wtext[1].innerHTML = localStorage.getItem("if-nameP");
+			wtext[2].innerHTML = localStorage.getItem("if-ageP");
+			wtext[3].innerHTML = localStorage.getItem("if-titleP");
+			wtext[4].innerHTML = localStorage.getItem("if-dateP");
+			wtext[5].value = localStorage.getItem("if-timeP");
+			wtext[6].value = localStorage.getItem("if-messageP");
+			wtext[7].value = localStorage.getItem("if-locationP");
+		}
+		function load2(){
+			var salutations = document.getElementById("insSalutation");
+			var invited = document.getElementById("invited");
+			var date = document.getElementById("insDate");
+			var location = document.getElementById("insLocation");
+			var message = document.getElementById("insMessage");
+			var insTitle = document.getElementById("insTitle")
+			var title = document.getElementById("ctitle");
+			var head = document.getElementById("chead");
+			var body = document.getElementById("cbody");
+			var card = document.getElementById("card");
+			var time = document.getElementById("insTime");
+			var cbox = document.getElementById("cbox");
+			var icon = document.getElementById("insIcon");
+			var cboxcolor = document.getElementById("ccolor");
+			var fcolor = document.getElementById("colorb");
+			var border = document.getElementById("border");
+			var icon = document.getElementById("insIcon");
+
+			atext[0].innerHTML = localStorage.getItem("if-salutations2");
+			salutations.innerHTML = localStorage.getItem("if-salutations2");
+			atext[1].innerHTML = localStorage.getItem("if-title2");
+			insTitle.innerHTML = localStorage.getItem("if-title2");
+			atext[2].value = localStorage.getItem("if-message2");
+			message.innerHTML = localStorage.getItem("if-message2");
+			atext[3].innerHTML = localStorage.getItem("if-date2");
+			date.innerHTML = localStorage.getItem("if-date2");
+			atext[4].value = localStorage.getItem("if-time2");
+			time.innerHTML = localStorage.getItem("if-time2");
+			atext[5].value = localStorage.getItem("if-location2");
+			location.innerHTML = localStorage.getItem("if-location2");
+
+			if (!(localStorage.getItem("if-border2") == "")){
+
+				while (border.hasChildNodes()){
+				border.removeChild(border.firstChild);
+			}
+
+			var img = document.createElement('img');
+			img.setAttribute('src', localStorage.getItem("if-border2"));
+			img.style.cssText = "width: 100%; height: 100%";
+
+			border.appendChild(img);
+			}
+
+			title.style.fontSize = localStorage.getItem("if-fontSize2a");
+			head.style.fontSize = localStorage.getItem("if-fontSize2b");
+			body.style.fontSize = localStorage.getItem("if-fontSize2a");
+			message.style.fontSize = localStorage.getItem("if-fontSize2c");
+
+			fcolor.value = localStorage.getItem("if-fontColor2");
+			title.style.color = localStorage.getItem("if-fontColor2");
+			head.style.color = localStorage.getItem("if-fontColor2");
+			body.style.color = localStorage.getItem("if-fontColor2");
+			message.style.color = localStorage.getItem("if-fontColor2");
+			location.style.color = localStorage.getItem("if-fontColor2");
+			cboxcolor.value = localStorage.getItem("if-contentColor");
+			cbox.style.backgroundColor = localStorage.getItem("if-contentColor");
+			card.style.background = localStorage.getItem("if-bg2");
+			card.style.backgroundColor = localStorage.getItem("if-bgColor2");
+
+			salutations.style.fontFamily = "" + localStorage.getItem("if-fontType2") + "";
+			invited.style.fontFamily = "" + localStorage.getItem("if-fontType2") + "";
+			date.style.fontFamily = "" + localStorage.getItem("if-fontType2") + "";
+			location.style.fontFamily = "" + localStorage.getItem("if-fontType2") + "";
+			message.style.fontFamily = "" + localStorage.getItem("if-fontType2") + "";
+			insTitle.style.fontFamily = "" + localStorage.getItem("if-fontType2") + "";	
+			time.style.fontFamily = "" + localStorage.getItem("if-fontType2") + "";
+
+			if (localStorage.getItem("if-Icon") == "images/hr3.png"){
+				icon.removeAttribute('src');
+				icon.setAttribute('src', localStorage.getItem("if-Icon"));
+				icon.style.width = "60%";
+			} else {
+				icon.removeAttribute('src');
+				icon.setAttribute('src', localStorage.getItem("if-Icon"));
+				icon.style.width = "70%";
+			}
+			
+
+		}
+		function ifload2P(){
+			atext[0].innerHTML = localStorage.getItem("if-salutations2P");
+			atext[1].innerHTML = localStorage.getItem("if-title2P");
+			atext[2].value= localStorage.getItem("if-message2P");
+			atext[3].innerHTML = localStorage.getItem("if-date2P");
+			atext[4].value = localStorage.getItem("if-time2P");
+			atext[5].value = localStorage.getItem("if-location2P");
+		}
+
+	</script>
+</head>
+<body onload="ifloadP(), ifload2P()">
+	<div id="overlay" onclick="previewEnd()">
+	</div>
+	<header>
+		<div id="title">E-CARDS ONLINE</div>
+		<div id="home"><a href="index.html"><i class="material-icons hbutton">home</i></a></div>
+	</header>
+	<div id="editor">
+	<nav>
+   		<a href="#first" onclick="revert2()"><i class="material-icons">web</i></a>
+  		<a href="#second" onclick="revert()"><i class="material-icons">subject</i></a>
+   		<a href="#third" onclick="revert()"><i class="material-icons">collections</i></a>
+   		<a href="#fourth" onclick="revert()"><i class="material-icons">email</i></a>
+ 	</nav>
+  
+	<div class= "container"> 
+  		<section id="first">
+  			<div class="tcontainer">
+  				<img src="images/template3.png" onclick="tFirst(), reveal()" class="template">
+  				<label>Birthday</label>
+  			</div>
+  			<div class="tcontainer">
+  				<img src="images/template4.png" onclick="tSecond(), reveal()" class="template">
+  				<label>Hari Raya</label>
+  			</div>
+  		</section>
+  
+  		<section>
+    		<div class="info" >
+    			<label for="salutations">Salutations</label>
+    			<div class="textbox wtext" contenteditable="true"></div>
+    			<label for="greetings">Choose greetings and honorifics:</label>
+    			<div class="greetings">
+    				<div class="gcontent" onclick="greet(this.innerHTML)">Assalamualaikum</div>
+    				<div class="gcontent" onclick="greet(this.innerHTML)">Dear</div>
+    				<div class="gcontent" onclick="greet(this.innerHTML)">Greetings</div>
+    				<div class="gcontent" onclick="greet(this.innerHTML)">Hello</div>
+    				<div class="gcontent" onclick="greet(this.innerHTML)">Good day</div>
+    				<div class="gcontent" onclick="greet(this.innerHTML)">Hi there</div>
+    				<div class="gcontent" onclick="greet(this.innerHTML)">Sir</div>
+    				<div class="gcontent" onclick="greet(this.innerHTML)">Madam</div>
+    				<div class="gcontent" onclick="greet(this.innerHTML)">Dr.</div>
+    				<div class="gcontent" onclick="greet(this.innerHTML)">Mr.</div>
+    				<div class="gcontent" onclick="greet(this.innerHTML)">Mrs.</div>
+    			</div>
+    			<label for="name1">Name:</label>
+				<div class="textbox wtext" contenteditable="true"></div>
+				<label for="age">Age:</label>
+				<div class="textbox wtext" contenteditable="true"></div>
+				<label for="title">Title:</label>
+				<div class="textbox wtext" contenteditable="true"></div>
+				<label for="date">Date:</label>
+				<div class="textbox wtext" contenteditable="true"></div>
+				<label for="time">Time:</label>
+				<input class="wtext" type="time"></input>
+				<label for="message">Message:</label>
+				<textarea id="message" class="textbox wtext" contenteditable="true"></textarea>
+				<label for="location">Location:</label>
+				<textarea id="location" class="textbox wtext" contenteditable="true"></textarea>
+				<label>Font Size:</label>
+				<select onchange="changeSize(this.value)" id="fSize1">
+					<option value="0">Size 1</option>
+					<option value="1">Size 2</option>
+					<option value="2">Size 3</option>
+				</select>
+				<label>Font Color: </label>
+				<input type="color" id="color1" onchange="changeFColor1()">
+				<label>Font: </label>
+				<select onchange="cFont(this.value)" id="fType1">
+					<option value="0">ABeeZee</option>
+					<option value="1">Marck Script</option>
+					<option value="2">Handlee</option>
+					<option value="3">Patrick Hand</option>
+					<option value="4">Kalam</option>
+				</select>
+				<button onclick="load()">Load favourite</button>
+				<button onclick="saved()">Mark as favourite</button>
+				<button onclick="reset1()">Reset</button>
+				<button onclick="onClick(), ifsaveP()">Preview</button>
+			</div>
+  		</section>
+  		<section>
+    		<div class="info">
+    			<label for="salutations">Salutations</label>
+    			<div class="textbox atext" contenteditable="true"></div>
+    			<label for="greetings">Choose greetings and honorifics:</label>
+    			<div class="greetings">
+    				<div class="gcontent" onclick="greet2(this.innerHTML)">Assalamualaikum</div>
+    				<div class="gcontent" onclick="greet2(this.innerHTML)">Dear</div>
+    				<div class="gcontent" onclick="greet2(this.innerHTML)">Greetings</div>
+    				<div class="gcontent" onclick="greet2(this.innerHTML)">Hello</div>
+    				<div class="gcontent" onclick="greet2(this.innerHTML)">Good day</div>
+    				<div class="gcontent" onclick="greet2(this.innerHTML)">Hi there</div>
+    				<div class="gcontent" onclick="greet2(this.innerHTML)">Sir</div>
+    				<div class="gcontent" onclick="greet2(this.innerHTML)">Madam</div>
+    				<div class="gcontent" onclick="greet2(this.innerHTML)">Dr.</div>
+    				<div class="gcontent" onclick="greet2(this.innerHTML)">Mr.</div>
+    				<div class="gcontent" onclick="greet2(this.innerHTML)">Mrs.</div>
+    			</div>
+    			<label for="header">Title: </label>
+    			<div class="textbox atext" contenteditable="true"></div>
+    			<label for="message">Message: </label>
+    			<textarea id="message2" class="textbox atext" contenteditable="true"></textarea>
+    			<label for="date">Date:</label>
+    			<div class="textbox atext" contenteditable="true"></div>
+				<label for="time">Time: </label>
+				<input class="textbox atext" type="time"></input>
+				<label for="location">Location: </label>
+				<textarea id="location2" class="textbox atext"></textarea>
+				<label>Font Size:</label>
+				<select onchange="changeSize2(this.value)" id="fSize2">
+					<option value="0">Size 1</option>
+					<option value="1">Size 2</option>
+					<option value="2">Size 3</option>
+				</select>
+ 				<label>Font Color: </label>
+				<input type="color" id="colorb" onchange="changeFColor2()">
+				<label>Content Background Color: </label>
+				<input type="color" id="ccolor" onchange="changeCBGColor()">
+				<label>Font: </label>
+				<select onchange="cFont(this.value)" id="fType2">
+					<option value="0">ABeeZee</option>
+					<option value="1">Marck Script</option>
+					<option value="2">Handlee</option>
+					<option value="3">Patrick Hand</option>
+					<option value="4">Kalam</option>
+				</select>
+				<button onclick="load2()">Load favourite</button>
+				<button onclick="saved2()">Mark as favourite</button>
+				<button onclick="reset2()">Reset</button>
+				<button onclick="onClick2(), ifsave2P()">Preview</button>
+			</div>
+  		</section>
+  		<section>
+ 			<div class="info">
+				<label>Background Color: </label>
+				<input type="color" id="color2" onchange="changeBGColor()">
+ 				<label>Background: </label>
+ 				<select onchange="changeBG(this.value)" id="cardBG">
+ 					<option value="0">Pick a background</option>
+ 					<option value="1">Background 1</option>
+ 					<option value="2">Background 2</option>
+ 					<option value="3">Background 3</option>
+ 				</select>
+ 				<button onclick="rBG()" class="rBG">Remove Background</button>
+ 				<div id="dborder">
+ 					<label for="border">Drag a border to the card: </label>
+ 					<div class="imgcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+ 						<img class="bimg" src="images/border8.png" id="drag1" draggable="true" ondragstart="drag(event), rBorder()">
+ 					</div>
+ 					<div class="imgcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+ 						<img class="bimg" src="images/border7.png" id="drag2" draggable="true" ondragstart="drag(event), rBorder()">
+ 					</div>
+ 					<div class="imgcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+ 						<img class="bimg" src="images/border10.png" id="drag3" draggable="true" ondragstart="drag(event), rBorder()">
+ 					</div>	
+ 				</div>
+ 				<div id="mtborder">
+ 					<label for="border">Click a border: </label>
+ 					<div class="imgcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+ 						<img class="bimg" src="images/border8.png" id="drag1" draggable="true" onclick="bClick(this.src)">
+ 					</div>
+ 					<div class="imgcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+ 						<img class="bimg" src="images/border7.png" id="drag2" draggable="true" onclick="bClick(this.src)">
+ 					</div>
+ 					<div class="imgcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+ 						<img class="bimg" src="images/border10.png" id="drag3" draggable="true" onclick="bClick(this.src)">
+ 					</div>	
+ 				</div>
+ 				
+ 			</div>
+  		</section>
+ 		<section>
+ 			<div class="info">
+				<label>Background Color: </label>
+				<input type="color" id="color22" onchange="changeBGColor2()">
+ 				<label>Background: </label>
+ 				<select onchange="changeBG2(this.value)" id="cardBG2">
+ 					<option value="0">Pick a background</option>
+ 					<option value="1">Background 1</option>
+ 					<option value="2">Background 2</option>
+ 					<option value="3">Background 3</option>
+ 				</select>
+ 				<label>Icon: </label>
+ 				<select onchange="changeIcon(this.value)" id="cardIcon">
+ 					<option value="0">Pick an icon</option>
+ 					<option value="1">Icon 1</option>
+ 					<option value="2">Icon 2</option>
+ 					<option value="3">Icon 3</option>
+ 				</select>
+ 				<button onclick="rBG()" class="rBG">Remove Background</button>
+ 				<div id="dborder">
+ 					<label for="border">Drag a border to the card: </label>
+ 					<div class="imgcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+ 						<img class="bimg" src="images/border2.png" id="drag4" draggable="true" ondragstart="drag(event), rBorder()">
+ 					</div>
+ 					<div class="imgcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+ 						<img class="bimg" src="images/border4.png" id="drag5" draggable="true" ondragstart="drag(event), rBorder()">
+ 					</div>
+ 					<div class="imgcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+ 						<img class="bimg" src="images/border14.png" id="drag6" draggable="true" ondragstart="drag(event), rBorder()">
+ 					</div>
+ 				</div>
+ 				<div id="mtborder">
+ 					<label for="border">Click a border: </label>
+ 					<div class="imgcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+ 						<img class="bimg" src="images/border2.png" id="drag4" draggable="true" onclick="bClick(this.src)">
+ 					</div>
+ 					<div class="imgcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+ 						<img class="bimg" src="images/border4.png" id="drag5" draggable="true" onclick="bClick(this.src)">
+ 					</div>
+ 					<div class="imgcontainer" ondrop="drop(event)" ondragover="allowDrop(event)">
+ 						<img class="bimg" src="images/border14.png" id="drag6" draggable="true" onclick="bClick(this.src)">
+ 					</div>
+ 				</div>
+ 				
+ 			</div>
+  		</section>
+  		<section id="fourth">
+  			<div class="info">
+  				<label for="email">Enter recipient's E-Mail:</label>
+  				<div class="textbox" contenteditable="true" id="email"></div>
+				<button onclick="preview()" id="pbutton">Full Preview</button>
+  				<button onclick="send()">Send</button>
+  			</div>
+  		</section>
+	</div>
+</div>
+	<div id="preview">
+		<h2>Preview:</h2>
+		
+		<div id="card">
+			<div id="border" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+			<div id="ctext">
+			</div>
+		</div>
+
+
+	</div>
+	
+	
+
+</body>
+</html>
